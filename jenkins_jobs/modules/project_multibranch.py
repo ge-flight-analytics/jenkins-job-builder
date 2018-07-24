@@ -498,6 +498,16 @@ def git_scm(xml_parent, data):
         detected. (optional)
         Refer to :func:`~build_strategies <build_strategies>`.
 
+    :extensions:
+
+        * **clean** (`dict`)
+            * **after** (`bool`) - Clean the workspace after checkout
+            * **before** (`bool`) - Clean the workspace before checkout
+        * **depth** (`int`) - Set shallow clone depth (default 1)
+        * **do-not-fetch-tags** (`bool`) - Perform a clone without tags
+            (default false)
+        * **shallow-clone** (`bool`) - Perform shallow clone (default false)
+
     Minimal Example:
 
     .. literalinclude:: /../../tests/multibranch/fixtures/scm_git_minimal.yaml
@@ -539,6 +549,35 @@ def git_scm(xml_parent, data):
         rshf = XML.SubElement(traits,
             'jenkins.scm.impl.trait.RegexSCMHeadFilterTrait')
         XML.SubElement(rshf, 'regex').text = data.get('head-filter-regex')
+
+    if data.get('clean', None):
+        clean_after = data['clean'].get('after', False)
+        clean_before = data['clean'].get('before', False)
+        if clean_after:
+            helpers.git_extension_trait(traits, data,
+                ''.join([traits_path, '.CleanAfterCheckoutTrait']),
+                'CleanCheckout')
+        if clean_before:
+            helpers.git_extension_trait(traits, data,
+                ''.join([traits_path, '.CleanBeforeCheckoutTrait']),
+                'CleanBeforeCheckout')
+
+    clone_options = (
+        "shallow-clone",
+        "timeout",
+        "do-not-fetch-tags"
+    )
+    if any(key in data for key in clone_options):
+        clone_mapping = [
+            ('shallow-clone', 'shallow', False),
+            ('depth', 'depth', 1)]
+        if 'do-not-fetch-tags' in data:
+            clone_mapping.append(('do-not-fetch-tags', 'noTags', False))
+        if 'timeout' in data:
+            clone_mapping.append(('timeout', 'timeout', ''))
+        helpers.git_extension_trait(traits, data,
+            ''.join([traits_path, '.CloneOptionTrait']), 'CloneOption',
+            clone_mapping)
 
     if data.get('build-strategies', None):
         build_strategies(xml_parent, data)

@@ -674,3 +674,20 @@ def jms_messaging_common(parent, subelement, data):
         ("msg-content", 'messageContent', ''),
     ]
     convert_mapping_to_xml(namespace, data, mapping, fail_required=True)
+
+
+def git_extension_trait(xml_parent, data, trait_tagname, ext_suffix,
+    ext_mapping=None):
+    """Configures an SCMSourceTrait that wraps a Git SCM extension.
+
+    Requires the Jenkins :jenkins-wiki:`Git Plugin <Git+Plugin>`. Currently
+    extension traits are only defined for Git repositories in Jenkins.
+
+    """
+    impl_prefix = 'hudson.plugins.git.extensions.impl.'
+    trait = XML.SubElement(xml_parent, trait_tagname)
+    ext = XML.SubElement(trait, 'extension', {
+        'class': impl_prefix + ext_suffix
+    })
+    if ext_mapping:
+        convert_mapping_to_xml(ext, data, ext_mapping, fail_required=True)

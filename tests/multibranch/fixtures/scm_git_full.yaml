@@ -8,6 +8,12 @@ scm:
         discover-branches: false
         ignore-on-push-notifications: true
         discover-tags: true
+        clean:
+            after: true
+            before: true
+        depth: 0
+        do-not-fetch-tags: true
+        shallow-clone: true
         head-filter-regex: 'master|\d+\.\d+'
         build-strategies:
             - tags:

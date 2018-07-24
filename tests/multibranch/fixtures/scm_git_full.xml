@@ -41,6 +41,19 @@
             <jenkins.scm.impl.trait.RegexSCMHeadFilterTrait>
               <regex>master|\d+\.\d+</regex>
             </jenkins.scm.impl.trait.RegexSCMHeadFilterTrait>
+            <jenkins.plugins.git.traits.CleanAfterCheckoutTrait>
+              <extension class="hudson.plugins.git.extensions.impl.CleanCheckout"/>
+            </jenkins.plugins.git.traits.CleanAfterCheckoutTrait>
+            <jenkins.plugins.git.traits.CleanBeforeCheckoutTrait>
+              <extension class="hudson.plugins.git.extensions.impl.CleanBeforeCheckout"/>
+            </jenkins.plugins.git.traits.CleanBeforeCheckoutTrait>
+            <jenkins.plugins.git.traits.CloneOptionTrait>
+              <extension class="hudson.plugins.git.extensions.impl.CloneOption">
+                <shallow>true</shallow>
+                <depth>0</depth>
+                <noTags>true</noTags>
+              </extension>
+            </jenkins.plugins.git.traits.CloneOptionTrait>
           </traits>
         </source>
         <buildStrategies>
